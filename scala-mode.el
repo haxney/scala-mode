@@ -77,10 +77,8 @@
 (defconst scala-bug-e-mail "scala@listes.epfl.ch")
 (defconst scala-web-url "http://scala-lang.org/")
 
-
-;;; Helper functions/macroes
+;;; Helper functions/macros
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 
 (defun scala-mode:browse-web-site ()
   "Browse the Scala home-page."
@@ -88,13 +86,11 @@
   (require 'browse-url)
   (browse-url scala-web-url))
 
-
 (defun scala-mode:browse-api ()
   "Browse the Scala API."
   (interactive)
   (require 'browse-url)
   (browse-url scala-mode:api-url))
-
 
 (defun scala-mode:report-bug ()
   "Report a bug to the author of the Scala mode via e-mail.
@@ -108,96 +104,65 @@ through `mail-user-agent'."
      (concat "Emacs Scala mode v" scala-mode-version)
      '(scala-indent-step))))
 
-(defvar scala-mode-abbrev-table nil
+(defvar scala-mode-abbrev-table (make-abbrev-table)
   "Abbrev table in use in `scala-mode' buffers.")
-(define-abbrev-table 'scala-mode-abbrev-table nil)
 
+(defvar scala-mode-syntax-table
+  (let ((table (make-syntax-table)))
+    ;; strings and character literals
+    (modify-syntax-entry ?\" "\"" table)
+    (modify-syntax-entry ?\\ "\\" table)
 
-(defvar scala-mode-syntax-table nil
+    ;; different kinds of "parenthesis"
+    (modify-syntax-entry ?\( "()" table)
+    (modify-syntax-entry ?\[ "(]" table)
+    (modify-syntax-entry ?\{ "(}" table)
+    (modify-syntax-entry ?\) ")(" table)
+    (modify-syntax-entry ?\] ")[" table)
+    (modify-syntax-entry ?\} "){" table)
+
+    ;; special characters
+    (modify-syntax-entry ?\_ "_" table)
+
+    (dolist (char scala-all-special-chars)
+      (modify-syntax-entry char "." table))
+
+    (modify-syntax-entry ?\. "." table)
+
+    ;; comments
+    ;; the `n' means that comments can be nested
+    (modify-syntax-entry ?\/  ". 124nb" table)
+    (modify-syntax-entry ?\*  ". 23n"   table)
+    (modify-syntax-entry ?\n  "> bn" table)
+    (modify-syntax-entry ?\r  "> bn" table)
+    table)
   "Syntax table used in `scala-mode' buffers.")
-(when (not scala-mode-syntax-table)
-  (setq scala-mode-syntax-table (make-syntax-table))
-  ;; strings and character literals
-  (modify-syntax-entry ?\" "\"" scala-mode-syntax-table)
-  (modify-syntax-entry ?\\ "\\" scala-mode-syntax-table)
-
-  ;; different kinds of "parenthesis"
-  (modify-syntax-entry ?\( "()" scala-mode-syntax-table)
-  (modify-syntax-entry ?\[ "(]" scala-mode-syntax-table)
-  (modify-syntax-entry ?\{ "(}" scala-mode-syntax-table)
-  (modify-syntax-entry ?\) ")(" scala-mode-syntax-table)
-  (modify-syntax-entry ?\] ")[" scala-mode-syntax-table)
-  (modify-syntax-entry ?\} "){" scala-mode-syntax-table)
-
-  ;; special characters
-  (modify-syntax-entry ?\_ "_" scala-mode-syntax-table)
-
-  (dolist (char scala-all-special-chars)
-    (modify-syntax-entry char "." scala-mode-syntax-table))
-
-  (modify-syntax-entry ?\. "." scala-mode-syntax-table)
-
-  ;; comments
-  ;; the `n' means that comments can be nested
-  (modify-syntax-entry ?\/  ". 124nb" scala-mode-syntax-table)
-  (modify-syntax-entry ?\*  ". 23n"   scala-mode-syntax-table)
-  (modify-syntax-entry ?\n  "> bn" scala-mode-syntax-table)
-  (modify-syntax-entry ?\r  "> bn" scala-mode-syntax-table))
-
-
-;;; Mode
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;###autoload
-(defun scala-mode ()
+(define-derived-mode scala-mode prog-mode "Scala"
   "Major mode for editing Scala code.
-When started, run `scala-mode-hook'.
 \\{scala-mode-map}"
-  (interactive)
-  ;; set up local variables
-  (kill-all-local-variables)
-  (make-local-variable 'font-lock-defaults)
-  (make-local-variable 'paragraph-separate)
-  (make-local-variable 'paragraph-start)
-  (make-local-variable 'paragraph-ignore-fill-prefix)
-  (make-local-variable 'require-final-newline)
-  (make-local-variable 'comment-start)
-  (make-local-variable 'comment-end)
-  (make-local-variable 'comment-start-skip)
-  (make-local-variable 'comment-end-skip)
-  (make-local-variable 'comment-column)
-  ;(make-local-variable 'comment-indent-function)
-  (make-local-variable 'indent-line-function)
-  ;;
-  (set-syntax-table scala-mode-syntax-table)
-  (setq major-mode                    'scala-mode
-	mode-name                     "Scala"
-	local-abbrev-table            scala-mode-abbrev-table
-	font-lock-defaults            '(scala-font-lock-keywords
-                                       nil
-                                       nil
-                                       ((?\_ . "w"))
-                                       nil
-                                       (font-lock-syntactic-keywords . scala-font-lock-syntactic-keywords)
-                                       (parse-sexp-lookup-properties . t))
-	paragraph-separate            (concat "^\\s *$\\|" page-delimiter)
-	paragraph-start               (concat "^\\s *$\\|" page-delimiter)
-	paragraph-ignore-fill-prefix  t
-	require-final-newline         t
-	comment-start                 "// "
-	comment-end                   ""
-	comment-start-skip            "/\\*+ *\\|//+ *"
-	comment-end-skip              " *\\*+/\\| *"
-	comment-column                40
-;	comment-indent-function       'scala-comment-indent-function
-	indent-line-function          'scala-indent-line
-	)
+  :group 'scala
+  (set (make-local-variable 'font-lock-defaults)         '(scala-font-lock-keywords
+                                                           nil
+                                                           nil
+                                                           ((?\_ . "w"))
+                                                           nil
+                                                           (font-lock-syntactic-keywords . scala-font-lock-syntactic-keywords)
+                                                           (parse-sexp-lookup-properties . t)))
 
-  (use-local-map scala-mode-map)
-  (turn-on-font-lock)
-  (scala-mode-feature-install)
-  (if scala-mode-hook
-      (run-hooks 'scala-mode-hook)))
+  (set (make-local-variable 'paragraph-separate)           (concat "^\\s *$\\|" page-delimiter))
+  (set (make-local-variable 'paragraph-start)              (concat "^\\s *$\\|" page-delimiter))
+  (set (make-local-variable 'paragraph-ignore-fill-prefix) t)
+  (set (make-local-variable 'require-final-newline)        t)
+  (set (make-local-variable 'comment-start)                "// ")
+  (set (make-local-variable 'comment-end)                  "")
+  (set (make-local-variable 'comment-start-skip)           "/\\*+ *\\|//+ *")
+  (set (make-local-variable 'comment-end-skip)             " *\\*+/\\| *")
+  (set (make-local-variable 'comment-column)               40)
+  ;; (set (make-local-variable 'comment-indent-function)   'scala-comment-indent-function)
+  (set (make-local-variable 'indent-line-function)         'scala-indent-line)
+  (scala-mode-feature-install))
 
 ;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.scala\\'" . scala-mode))
