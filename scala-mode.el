@@ -108,10 +108,6 @@ through `mail-user-agent'."
      (concat "Emacs Scala mode v" scala-mode-version)
      '(scala-indent-step))))
 
-
-
-
-
 (defvar scala-mode-abbrev-table nil
   "Abbrev table in use in `scala-mode' buffers.")
 (define-abbrev-table 'scala-mode-abbrev-table nil)

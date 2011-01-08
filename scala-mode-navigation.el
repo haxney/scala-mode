@@ -1,5 +1,4 @@
-;;; -*-Emacs-Lisp-*-
-;;; scala-mode-navigation.el - 
+;;; scala-mode-navigation.el --- File navigation support for Scala.
 
 ;; Copyright (C) 2009 Scala Dev Team at EPFL
 ;; Authors: See AUTHORS file
@@ -8,29 +7,29 @@
 ;;; License
 
 ;; SCALA LICENSE
-;;  
+;;
 ;; Copyright (c) 2002-2010 EPFL, Lausanne, unless otherwise specified.
 ;; All rights reserved.
-;;  
+;;
 ;; This software was developed by the Programming Methods Laboratory of the
 ;; Swiss Federal Institute of Technology (EPFL), Lausanne, Switzerland.
-;;  
+;;
 ;; Permission to use, copy, modify, and distribute this software in source
 ;; or binary form for any purpose with or without fee is hereby granted,
 ;; provided that the following conditions are met:
-;;  
+;;
 ;;    1. Redistributions of source code must retain the above copyright
 ;;       notice, this list of conditions and the following disclaimer.
-;;  
+;;
 ;;    2. Redistributions in binary form must reproduce the above copyright
 ;;       notice, this list of conditions and the following disclaimer in the
 ;;       documentation and/or other materials provided with the distribution.
-;;  
+;;
 ;;    3. Neither the name of the EPFL nor the names of its contributors
 ;;       may be used to endorse or promote products derived from this
 ;;       software without specific prior written permission.
-;;  
-;;  
+;;
+;;
 ;; THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
 ;; ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 ;; IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -43,10 +42,10 @@
 ;; OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 ;; SUCH DAMAGE.
 
-;;; Code
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Commentary:
+;;
 
-(provide 'scala-mode-navigation)
+;;; Code:
 
 (require 'scala-mode-constants)
 
@@ -84,7 +83,6 @@
      ,@body
      (point)))
 
-
 (defmacro scala-move-if (&rest body)
   (let ((pt-sym (make-symbol "point"))
 	(res-sym (make-symbol "result")))
@@ -94,7 +92,7 @@
        ,res-sym)))
 
 (defun scala-forward-ident ()
-  ;; Move forward over an identifier.
+  "Move forward over an identifier."
   (scala-forward-spaces)
   (if (looking-at scala-ident-re)
       (goto-char (match-end 0))
@@ -102,7 +100,7 @@
   t)
 
 (defun scala-backward-ident ()
-  ;; Move backward over an identifier.
+  "Move backward over an identifier."
   (scala-backward-spaces)
   (if (scala-looking-at-backward scala-ident-re)
       (goto-char (match-beginning 0))
@@ -110,7 +108,7 @@
   t)
 
 (defun scala-forward-qual-ident ()
-  ;; Move forward over a qualifier identifier.
+  "Move forward over a qualifier identifier."
   (scala-forward-spaces)
   (if (looking-at scala-qual-ident-re)
       (goto-char (match-end 0))
@@ -118,7 +116,7 @@
   t)
 
 (defun scala-backward-qual-ident ()
-  ;; Move backward over a qualifier identifier.
+  "Move backward over a qualifier identifier."
   (scala-backward-spaces)
   (if (scala-looking-at-backward scala-qual-ident-re)
       (goto-char (match-beginning 0))
@@ -126,9 +124,9 @@
   t)
 
 (defun scala-forward-simple-type ()
-  ;; Move forward over a simple type (as defined by the grammar).
-  ;; Works only when point is at the beginning of a simple type
-  ;; (modulo initial spaces/comments).
+  "Move forward over a simple type (as defined by the grammar).
+Works only when point is at the beginning of a simple
+type (modulo initial spaces/comments)."
   (cond ((eobp) nil)
         ((= (char-after) ?\()
          ;; Parenthesized type
@@ -149,9 +147,9 @@
          t)))
 
 (defun scala-forward-type1 ()
-  ;; Move forward over a type1 (as defined by the grammar).
-  ;; Works only when point is at the beginning of a type (modulo
-  ;; initial spaces/comments).
+  "Move forward over a type1 (as defined by the grammar).
+Works only when point is at the beginning of a type (modulo
+initial spaces/comments)."
   (scala-forward-spaces)
   (scala-when-looking-at "\\<class\\>"
                          (forward-word 1) (scala-forward-spaces))
@@ -163,7 +161,7 @@
   t)
 
 (defun scala-forward-type ()
-  ;; Move forward over a type.
+  "Move forward over a type."
   (cond ((eobp) nil)
         ((= (char-after) ?\()
          ;; Function type (several arguments)
@@ -177,8 +175,7 @@
          t)))
 
 (defun scala-forward-type-param ()
-  ;; Move over a type parameter
-  ;; variance
+  "Move over a type parameter variance."
   (scala-when-looking-at "\\s *[-+]\\s *")
   (scala-forward-ident)
   ;; bounds
@@ -187,7 +184,11 @@
   t)
 
 (defun scala-forward-literal ()
-  ;; Move forward over an integer, float, character or string literal.
+  "Move forward over an integer, float, character or string literal."
   (scala-forward-spaces)
   (scala-when-looking-at scala-literal-re)
   t)
+
+(provide 'scala-mode-navigation)
+
+;;; scala-mode-navigation.el ends here

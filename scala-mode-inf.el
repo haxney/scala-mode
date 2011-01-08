@@ -1,5 +1,4 @@
-;;; -*-Emacs-Lisp-*-
-;;; scala-mode-inf.el - Interaction with a Scala interpreter.
+;;; scala-mode-inf.el --- Interaction with a Scala interpreter.
 
 ;; Copyright (C) 2009 Scala Dev Team at EPFL
 ;; Authors: See AUTHORS file
@@ -8,29 +7,29 @@
 ;;; License
 
 ;; SCALA LICENSE
-;;  
+;;
 ;; Copyright (c) 2002-2010 EPFL, Lausanne, unless otherwise specified.
 ;; All rights reserved.
-;;  
+;;
 ;; This software was developed by the Programming Methods Laboratory of the
 ;; Swiss Federal Institute of Technology (EPFL), Lausanne, Switzerland.
-;;  
+;;
 ;; Permission to use, copy, modify, and distribute this software in source
 ;; or binary form for any purpose with or without fee is hereby granted,
 ;; provided that the following conditions are met:
-;;  
+;;
 ;;    1. Redistributions of source code must retain the above copyright
 ;;       notice, this list of conditions and the following disclaimer.
-;;  
+;;
 ;;    2. Redistributions in binary form must reproduce the above copyright
 ;;       notice, this list of conditions and the following disclaimer in the
 ;;       documentation and/or other materials provided with the distribution.
-;;  
+;;
 ;;    3. Neither the name of the EPFL nor the names of its contributors
 ;;       may be used to endorse or promote products derived from this
 ;;       software without specific prior written permission.
-;;  
-;;  
+;;
+;;
 ;; THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
 ;; ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 ;; IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -43,11 +42,11 @@
 ;; OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 ;; SUCH DAMAGE.
 
-;;; Code
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(provide 'scala-mode-inf)
+;;; Commentary:
+;;
 
+;;; Code:
 
 (require 'comint)
 
@@ -58,8 +57,9 @@
   :tag "Inferior Scala")
 
 (defcustom scala-interpreter "scala"
-  "The interpreter that `run-scala' should run. This should
- be a program in your PATH or the full pathname of the scala interpreter."
+  "The interpreter that `run-scala' should run.
+This should
+be a program in your PATH or the full pathname of the scala interpreter."
   :type 'string
   :group 'scala-mode-inf)
 
@@ -82,7 +82,7 @@
 
 ;;;###autoload
 (defun scala-interpreter-running-p-1 ()
-  ;; True iff a Scala interpreter is currently running in a buffer.
+  "True iff a Scala interpreter is currently running in a buffer."
   (comint-check-proc scala-inf-buffer-name))
 
 (defun scala-check-interpreter-running ()
@@ -91,7 +91,9 @@
 
 ;;;###autoload
 (defun scala-run-scala (cmd-line)
-  "Run a Scala interpreter in an Emacs buffer"
+  "Run a Scala interpreter in an Emacs buffer.
+Use the command CMD-LINE, which defaults to `scala-interpreter'
+unless a prefix argument is given."
   (interactive (list (if current-prefix-arg
 			 (read-string "Scala interpreter: " scala-interpreter)
                        scala-interpreter)))
@@ -104,14 +106,15 @@
     (pop-to-buffer scala-inf-buffer-name)))
 
 (defun scala-send-string (str &rest args)
-  ;; Send string to interpreter
+  "Send STR to interpreter.
+ARGS are formatted according to STR and sent."
   (comint-send-string scala-inf-buffer-name (apply 'format str args))
   ;; (comint-send-string scala-inf-buffer-name "\nemacs:end\n")) Heineman's contrib (06/03/2007)
   (comint-send-string scala-inf-buffer-name "\n"))
 
 ;;;###autoload
 (defun scala-switch-to-interpreter ()
-  "Switch to buffer containing the interpreter"
+  "Switch to buffer containing the interpreter."
   (interactive)
   (scala-check-interpreter-running)
   (switch-to-buffer scala-inf-buffer-name))
@@ -120,7 +123,8 @@
 
 ;;;###autoload
 (defun scala-eval-region (start end)
-  "Send current region to Scala interpreter."
+  "Send current region to Scala interpreter.
+Send the active region or between START and END, if called non-interactively."
   (interactive "r")
   (scala-check-interpreter-running)
   (comint-send-region scala-inf-buffer-name start end)
@@ -146,8 +150,7 @@ In the following case, if the cursor is in the second line, then
 the complete function definition will be send to the interpreter:
 
 def foo =
-  1 + 2
-"
+  1 + 2"
   (interactive)
   (save-excursion
     ;; find the first non-empty line
@@ -178,12 +181,12 @@ def foo =
 
 (defvar scala-prev-l/c-dir/file nil
   "Caches the last (directory . file) pair.
-Caches the last pair used in the last scala-load-file.
+Caches the last pair used in the last `scala-load-file'.
 Used for determining the default in the next one.")
 
 ;;;###autoload
 (defun scala-load-file (file-name)
-  "Load a file in the Scala interpreter."
+  "Load FILE-NAME in the Scala interpreter."
   (interactive (comint-get-source "Load Scala file: " scala-prev-l/c-dir/file
 				  '(scala-mode) t))
   (scala-check-interpreter-running)
@@ -199,3 +202,7 @@ Used for determining the default in the next one.")
   (scala-check-interpreter-running)
   (scala-send-string "\n:quit"))
 
+
+(provide 'scala-mode-inf)
+
+;;; scala-mode-inf.el ends here

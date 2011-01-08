@@ -1,5 +1,4 @@
-;;; -*-Emacs-Lisp-*-
-;;; scala-mode-fontlock.el - 
+;;; scala-mode-fontlock.el --- Font locking support for Scala.
 
 ;; Copyright (C) 2009 Scala Dev Team at EPFL
 ;; Authors: See AUTHORS file
@@ -8,29 +7,29 @@
 ;;; License
 
 ;; SCALA LICENSE
-;;  
+;;
 ;; Copyright (c) 2002-2010 EPFL, Lausanne, unless otherwise specified.
 ;; All rights reserved.
-;;  
+;;
 ;; This software was developed by the Programming Methods Laboratory of the
 ;; Swiss Federal Institute of Technology (EPFL), Lausanne, Switzerland.
-;;  
+;;
 ;; Permission to use, copy, modify, and distribute this software in source
 ;; or binary form for any purpose with or without fee is hereby granted,
 ;; provided that the following conditions are met:
-;;  
+;;
 ;;    1. Redistributions of source code must retain the above copyright
 ;;       notice, this list of conditions and the following disclaimer.
-;;  
+;;
 ;;    2. Redistributions in binary form must reproduce the above copyright
 ;;       notice, this list of conditions and the following disclaimer in the
 ;;       documentation and/or other materials provided with the distribution.
-;;  
+;;
 ;;    3. Neither the name of the EPFL nor the names of its contributors
 ;;       may be used to endorse or promote products derived from this
 ;;       software without specific prior written permission.
-;;  
-;;  
+;;
+;;
 ;; THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
 ;; ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 ;; IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -43,17 +42,16 @@
 ;; OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 ;; SUCH DAMAGE.
 
-;;; Code
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Commentary:
+;;
 
-(provide 'scala-mode-fontlock)
+;;; Code:
 
 (require 'cl)
 (require 'font-lock)
 (require 'scala-mode-constants)
 (require 'scala-mode-lib)
 (require 'scala-mode-navigation)
-
 
 (defun scala-mark-borders (funs)
   (loop for (fun . flag) in funs
@@ -134,7 +132,6 @@
                 (goto-char (match-end 0)))
                ((scala-match-and-skip-binding limit) t)))))
 
-
 (defvar scala-font-lock-keywords
   `(;; keywords
     (,scala-keywords-re 0 font-lock-keyword-face nil)
@@ -145,27 +142,27 @@
 	    'font-lock-constant-face
 	  'font-lock-keyword-face)
      nil)
-     
+
     ;; modules
     (,(concat "\\<\\(module\\|object\\)\\>\\s *\\(" scala-ident-re "\\)")
      (2 font-lock-variable-name-face nil))
-     
+
     ;; type definitions
     (,(concat "\\<type\\>\\s *\\(" scala-ident-re "\\)")
      (1 font-lock-type-face nil))
-     
+
     ;; variables
     ("\\<var\\>"
      (scala-match-and-skip-binding (goto-char (match-end 0))
 				   nil
 				   (1 font-lock-variable-name-face nil)
 				   (2 font-lock-type-face nil t)))
-     
+
     ;; functions
-    (,(concat "\\(^\\|[^(,]\\)\\s *\\<def\\>" 
-	      "\\s *" 
-	      "\\(" 
-	      scala-ident-re 
+    (,(concat "\\(^\\|[^(,]\\)\\s *\\<def\\>"
+	      "\\s *"
+	      "\\("
+	      scala-ident-re
 	      "\\)\\s *")
      (2 font-lock-function-name-face nil)
      (scala-match-and-skip-type-param (goto-char (match-end 0)) nil
@@ -175,7 +172,7 @@
 				   (2 font-lock-type-face nil t))
      (scala-match-and-skip-result-type nil nil
 				       (0 font-lock-type-face nil)))
-     
+
     ;; class definitions
     ("\\<\\(class\\|trait\\)\\>"
      (scala-match-and-skip-ident (goto-char (match-end 0)) nil
@@ -185,14 +182,14 @@
      (scala-match-and-skip-binding nil nil
 				   (1 font-lock-variable-name-face nil)
 				   (2 font-lock-type-face nil t)))
-     
+
     ;; "extends" and "with" clauses
     ("\\<\\(extends\\|with\\)\\>\\s *[^{]"
      (scala-match-and-skip-ident (goto-char (1- (match-end 0))) nil
 				 (0 font-lock-type-face nil))
      (scala-match-and-skip-type-param nil nil
 				      (1 font-lock-type-face nil t)))
-     
+
     ;; patterns
     ("\\<\\(case\\|val\\)\\>\\s *"
      (scala-match-and-skip-pattern (goto-char (match-end 0)) nil
@@ -200,10 +197,10 @@
 				   (2 font-lock-type-face nil t)))
     ))
 
-
 (defvar scala-font-lock-syntactic-keywords
   `((,scala-char-re (0 "\"" t nil))
     (scala-search-special-identifier-forward (0 "w" nil nil))))
 
+(provide 'scala-mode-fontlock)
 
-
+;;; scala-mode-fontlock.el ends here
