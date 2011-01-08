@@ -42,7 +42,6 @@
 ;; OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 ;; SUCH DAMAGE.
 
-
 ;;; Commentary:
 ;;
 
@@ -52,7 +51,6 @@
   "Indentation step."
   :type 'integer
   :group 'scala)
-
 
 (defun scala-parse-partial-sexp ()
   (parse-partial-sexp (point-min) (point)))
@@ -85,7 +83,6 @@
       (and (not (scala-in-single-line-comment-p))
 	   (eq (get-text-property (point) 'face) 'font-lock-comment-face))
     nil))
-
 
 (defun scala-in-string-p ()
   "Return t iff the point is inside a string."
@@ -165,7 +162,6 @@ Return nil if indentation cannot be guessed."
 	       (scala-backward-spaces))
 	     (scala-looking-at-backward scala-expr-start-re)))
 	 (+ (current-indentation) scala-mode-indent:step))))
-
 
 (defun scala-indentation-from-block ()
   "Return suggested indentation based on the current block."

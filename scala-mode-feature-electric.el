@@ -43,7 +43,6 @@
 ;; OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 ;; SUCH DAMAGE.
 
-
 ;;; Commentary:
 ;;
 
@@ -54,7 +53,6 @@
 (defgroup scala-mode-feature:electric nil
   "Minor mode providing electric editing commands for scala files"
   :group 'scala)
-
 
 (defcustom scala-mode-feature:electric-expand-delimiters-list '(all)
   "*List of contexts where matching delimiter should be inserted.
@@ -70,12 +68,10 @@ The word 'all' will do all insertions."
               (const :tag "Vertical bar" ?\| ))
   :group 'scala-mode-feature:electric)
 
-
 (defcustom scala-mode-feature:electric-newline-before-closing-bracket nil
   "*Controls whether a newline should be inserted before the closing bracket or not."
   :type 'boolean
   :group 'scala-mode-feature:electric)
-
 
 (defcustom scala-mode-feature:electric-on-per-default nil
   "*Controls whether scala electric mode should be on per default or not."
@@ -90,7 +86,6 @@ The word 'all' will do all insertions."
     (?\' . ?\')
     (?\` . ?\`)
     (?\" . ?\")))
-
 
 (defvar scala-mode-feature-electric-mode scala-mode-feature:electric-on-per-default
   "nil disables scala electric mode, non-nil enables.")
@@ -114,7 +109,6 @@ The word 'all' will do all insertions."
 
 ;; Alias for some backwards compat
 (defalias 'scala-electric-mode 'scala-mode-feature-electric-mode)
-
 
 ;; Functions
 (defun scala-mode-feature-electric-active-p ()

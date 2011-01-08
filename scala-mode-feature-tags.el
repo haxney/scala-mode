@@ -54,19 +54,16 @@
   "Creating and using TAGS file searches"
   :group 'scala)
 
-
 (defcustom scala-mode-feature:tags-command "ctags"
   "Tags command for parsing scala code.
 Please see the contrib directory for ctags options for parsing scala files."
   :type 'string
   :group 'scala-mode-feature:tags)
 
-
 (defcustom scala-mode-feature:tags-option "-e -o %s -R %s"
   "Options for the ctags command."
   :type 'string
   :group 'scala-mode-feature:tags)
-
 
 (defcustom scala-mode-feature:tags-ask-when-reload nil
   "Indicates whether the user should confirm reload a TAGS table or not."
@@ -94,7 +91,6 @@ Please see the contrib directory for ctags options for parsing scala files."
       (visit-tags-table tags-file-name))
     (setq scala-mode-feature-tags-tag-file tags-file-name)))
 
-
 (defun scala-mode-feature-tags-load (file-name)
   "Load TAGS file from FILE-NAME."
   (interactive "fTAGS file: ")
@@ -103,7 +99,6 @@ Please see the contrib directory for ctags options for parsing scala files."
 	(visit-tags-table file-name)
 	(setq scala-mode-feature-tags-tag-file file-name))
     (message "The TAGS file does not exist!")))
-
 
 (defun scala-mode-feature-tags-complete ()
   "Perform completion on the text around point.
@@ -135,7 +130,6 @@ for \\[find-tag] (which see)."
 	     (all-completions pattern scala-comp)))
 	  (message "Making completion list...%s" "done"))))))
 
-
 (defun scala-mode-feature-tags-completion-table ()
     (or (and scala-mode-feature-tags-tag-file
 	     scala-mode-feature-tags-completion-table)
@@ -148,7 +142,6 @@ for \\[find-tag] (which see)."
         (unless tags-table
           (error "No TAGS file active!"))
         (setq scala-mode-feature-tags-completion-table tags-table))))
-
 
 (defun scala-mode-feature-tags-get-pattern ()
   (save-excursion

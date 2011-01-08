@@ -42,6 +42,10 @@
 ;; OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 ;; SUCH DAMAGE.
 
+
+;;; Commentary:
+;;
+
 ;;; Code:
 
 (require 'cl)
@@ -50,12 +54,10 @@
 ;; Helper functions
 
 (defun scala-regexp-opt-charset (chars)
-  ;;
-  ;; Return a regexp to match a character in CHARS.
-  ;;
-  ;; The basic idea is to find character ranges.  Also we take care in the
-  ;; position of character set meta characters in the character set regexp.
-  ;;
+  "Return a regexp to match a character in CHARS.
+
+The basic idea is to find character ranges.  Also we take care in the
+position of character set meta characters in the character set regexp."
   (let* ((charmap (make-char-table 'case-table))
      (start -1) (end -2)
      (charset "")
@@ -136,11 +138,11 @@ reserved keywords when used alone.")
 
 (defconst scala-most-special-char-re
   (scala-regexp-opt-charset scala-most-special-chars)
-  "Regular expression matching a single Scala special character")
+  "Regular expression matching a single Scala special character.")
 
 (defconst scala-all-special-char-re
   (scala-regexp-opt-charset scala-all-special-chars)
-  "Regular expression matching a single Scala special character")
+  "Regular expression matching a single Scala special character.")
 
 (defconst scala-keywords-re
   (regexp-opt '("abstract" "case" "class" "catch" "def" "do" "else" "extends"
@@ -199,3 +201,5 @@ reserved keywords when used alone.")
   (concat "\\(" "^/\\*.*" "\\|" "^//.*" "\\|" ".*\\*/$" "\\)"))
 
 (provide 'scala-mode-constants)
+
+;;; scala-mode-constants.el ends here
